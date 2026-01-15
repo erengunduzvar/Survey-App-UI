@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Container,
@@ -15,12 +15,14 @@ import {
   Chip,
   Stack,
   IconButton,
+  InputAdornment,
 } from "@mui/material";
 import {
   Add,
   KeyboardArrowUp,
   KeyboardArrowDown,
   Delete as DeleteIcon,
+  CalendarToday,
 } from "@mui/icons-material";
 import { authService } from "../auth/authService";
 
@@ -33,6 +35,7 @@ function CreateSurvey({
   initialSurvey,
 }) {
   const navigate = useNavigate();
+  const endDateInputRef = useRef(null);
   const isEdit = mode === "edit";
   const isReadOnly = isEdit && initialSurvey?.status === "PUBLISHED";
   const [formData, setFormData] = useState({
@@ -463,6 +466,29 @@ function CreateSurvey({
                 margin="normal"
                 variant="outlined"
                 InputLabelProps={{ shrink: true }}
+                inputRef={endDateInputRef}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        aria-label="Takvimden bitiş tarihi seç"
+                        edge="end"
+                        disabled={isReadOnly}
+                        onClick={() => {
+                          const el = endDateInputRef.current;
+                          if (!el) return;
+                          el.focus();
+                          // Chromium tabanlı tarayıcılarda native picker'ı açar
+                          if (typeof el.showPicker === "function") {
+                            el.showPicker();
+                          }
+                        }}
+                      >
+                        <CalendarToday fontSize="small" />
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
                 disabled={isReadOnly}
               />
 
