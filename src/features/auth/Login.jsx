@@ -53,20 +53,22 @@ function Login() {
   };
 
   return (
-    <Container maxWidth={false} disableGutters>
-      <Box
-        sx={{
-          minHeight: "100vh",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          p: "4px",
-        }}
-      >
+    <Container
+      maxWidth="sm"
+      sx={{
+        minHeight: "100vh",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        py: { xs: 4, sm: 6 },
+        px: { xs: 2, sm: 2 },
+      }}
+    >
+      <Box sx={{ width: "100%" }}>
         <Paper
           elevation={8}
           sx={{
-            p: 4,
+            p: { xs: 3, sm: 4 },
             width: "100%",
             borderRadius: 3,
             background: "linear-gradient(145deg, #ffffff 0%, #f5f7fa 100%)",

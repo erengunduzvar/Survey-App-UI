@@ -230,15 +230,17 @@ function SurveyList() {
                         <ContentCopy fontSize="small" />
                       </IconButton>
                     </Tooltip>
-                    <Tooltip title="Sil">
-                      <IconButton
-                        size="small"
-                        color="error"
-                        onClick={(e) => handleDelete(e, survey.surveyId)}
-                      >
-                        <Delete fontSize="small" />
-                      </IconButton>
-                    </Tooltip>
+                    {String(survey.status).toUpperCase() !== "PUBLISHED" && (
+                      <Tooltip title="Sil">
+                        <IconButton
+                          size="small"
+                          color="error"
+                          onClick={(e) => handleDelete(e, survey.surveyId)}
+                        >
+                          <Delete fontSize="small" />
+                        </IconButton>
+                      </Tooltip>
+                    )}
                   </TableCell>
                 </TableRow>
               ))}

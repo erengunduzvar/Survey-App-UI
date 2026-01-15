@@ -6,10 +6,9 @@ import {
   Toolbar,
   Button,
   Container,
-  IconButton,
   Typography,
 } from "@mui/material";
-import { Add } from "@mui/icons-material";
+import { Add, Logout as LogoutIcon } from "@mui/icons-material";
 import { authService } from "../auth/authService";
 import CreateSurvey from "./CreateSurvey";
 import SurveyList from "./SurveyList";
@@ -66,24 +65,44 @@ function Home() {
       }}
     >
       <AppBar position="static" color="transparent" elevation={0}>
-        <Toolbar>
+        <Toolbar sx={{ minHeight: 72 }}>
           <Typography
-            variant="h6"
+            variant="h5"
             component="div"
-            sx={{ flexGrow: 1, fontWeight: 600, cursor: "pointer" }}
+            sx={{
+              flexGrow: 1,
+              fontWeight: 800,
+              cursor: "pointer",
+              fontSize: 24,
+            }}
             onClick={handleGoHome}
           >
             Survey App
           </Typography>
-          <IconButton
+          <Button
+            variant="contained"
             color="primary"
+            startIcon={<Add />}
             onClick={handleCreateSurvey}
-            sx={{ mr: 1 }}
-            aria-label="Yeni Anket Oluştur"
+            sx={{
+              mr: 1.5,
+              borderRadius: 2,
+              textTransform: "none",
+              fontWeight: 700,
+              px: 2.25,
+              py: 1.1,
+            }}
+            size="large"
           >
-            <Add />
-          </IconButton>
-          <Button color="inherit" onClick={handleLogout}>
+            Yeni Anket Oluştur
+          </Button>
+          <Button
+            color="inherit"
+            startIcon={<LogoutIcon />}
+            onClick={handleLogout}
+            sx={{ textTransform: "none", fontWeight: 700 }}
+            size="large"
+          >
             Logout
           </Button>
         </Toolbar>

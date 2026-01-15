@@ -11,7 +11,6 @@ import {
   CircularProgress,
   InputAdornment,
   IconButton,
-  MenuItem,
 } from "@mui/material";
 import { Visibility, VisibilityOff, PersonAdd } from "@mui/icons-material";
 import { authService } from "./authService";
@@ -21,7 +20,6 @@ function Register() {
     email: "",
     password: "",
     confirmPassword: "",
-    role: "ROLE_USER",
   });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -55,7 +53,11 @@ function Register() {
     setLoading(true);
 
     try {
-      const { confirmPassword, ...registerData } = formData;
+      const registerData = {
+        email: formData.email,
+        password: formData.password,
+        role: "ROLE_ADMIN",
+      };
       await authService.register(registerData);
       navigate("/login");
     } catch (err) {
@@ -66,20 +68,22 @@ function Register() {
   };
 
   return (
-    <Container maxWidth={false} disableGutters>
-      <Box
-        sx={{
-          minHeight: "100vh",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          p: "4px",
-        }}
-      >
+    <Container
+      maxWidth="sm"
+      sx={{
+        minHeight: "100vh",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        py: { xs: 4, sm: 6 },
+        px: { xs: 2, sm: 2 },
+      }}
+    >
+      <Box sx={{ width: "100%" }}>
         <Paper
           elevation={8}
           sx={{
-            p: 4,
+            p: { xs: 3, sm: 4 },
             width: "100%",
             borderRadius: 3,
             background: "linear-gradient(145deg, #ffffff 0%, #f5f7fa 100%)",
@@ -113,20 +117,6 @@ function Register() {
               variant="outlined"
               autoComplete="email"
             />
-
-            <TextField
-              select
-              fullWidth
-              label="Role"
-              name="role"
-              value={formData.role}
-              onChange={handleChange}
-              margin="normal"
-              variant="outlined"
-            >
-              <MenuItem value="ROLE_USER">User</MenuItem>
-              <MenuItem value="ROLE_ADMIN">Admin</MenuItem>
-            </TextField>
 
             <TextField
               fullWidth
