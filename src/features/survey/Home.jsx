@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   AppBar,
@@ -10,24 +9,9 @@ import {
 } from "@mui/material";
 import { Add, Logout as LogoutIcon } from "@mui/icons-material";
 import { authService } from "../auth/authService";
-import CreateSurvey from "./CreateSurvey";
 import SurveyList from "./SurveyList";
 
-function decodeJwt(token) {
-  try {
-    const base64Url = token.split(".")[1];
-    if (!base64Url) return null;
-    const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
-    const padded = base64 + "=".repeat((4 - (base64.length % 4)) % 4);
-    const json = atob(padded);
-    return JSON.parse(json);
-  } catch {
-    return null;
-  }
-}
-
 function Home() {
-  const [showCreate, setShowCreate] = useState(false);
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -35,24 +19,11 @@ function Home() {
     navigate("/login");
   };
 
-  let userEmail = "";
-  try {
-    const token = authService.getToken();
-    if (token) {
-      const payload = decodeJwt(token);
-      if (!payload) {
-        throw new Error("Invalid token payload");
-      }
-      userEmail = payload.email || "";
-    }
-  } catch {}
-
   const handleCreateSurvey = () => {
-    setShowCreate((prev) => !prev);
+    navigate("/surveys/new");
   };
 
   const handleGoHome = () => {
-    setShowCreate(false);
     navigate("/");
   };
 
@@ -79,6 +50,7 @@ function Home() {
           >
             Survey App
           </Typography>
+
           <Button
             variant="contained"
             color="primary"
@@ -96,6 +68,7 @@ function Home() {
           >
             Yeni Anket Oluştur
           </Button>
+
           <Button
             color="inherit"
             startIcon={<LogoutIcon />}
@@ -107,37 +80,17 @@ function Home() {
           </Button>
         </Toolbar>
       </AppBar>
-      {!showCreate && (
-        <Box
-          sx={{
-            flex: 1,
-            py: 4,
-          }}
-        >
-          <Container maxWidth="lg">
-            <SurveyList />
-          </Container>
-        </Box>
-      )}
-      {showCreate && (
-        <Box
-          sx={{
-            flex: 1,
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "flex-start",
-            py: "4px",
-          }}
-        >
-          <Box sx={{ width: "100%", maxWidth: 1200, px: "4px" }}>
-            <CreateSurvey
-              inline
-              redirectOnSuccess={false}
-              onSuccess={() => setShowCreate(false)}
-            />
-          </Box>
-        </Box>
-      )}
+
+      <Box
+        sx={{
+          flex: 1,
+          py: 4,
+        }}
+      >
+        <Container maxWidth="lg">
+          <SurveyList />
+        </Container>
+      </Box>
     </Box>
   );
 }
