@@ -9,7 +9,7 @@ import { ThemeProvider, createTheme, CssBaseline } from "@mui/material";
 import Login from "./features/auth/Login";
 import Register from "./features/auth/Register";
 import Home from "./features/survey/Home";
-import CreateSurvey from "./features/survey/CreateSurvey";
+import CreateSurveyPage from "./features/survey/CreateSurveyPage";
 import SurveyDetail from "./features/survey/SurveyDetail";
 import ProtectedRoute from "./features/auth/ProtectedRoute";
 
@@ -85,7 +85,7 @@ function App() {
             path="/surveys/new"
             element={
               <ProtectedRoute>
-                <CreateSurvey />
+                <CreateSurveyPage />
               </ProtectedRoute>
             }
           />
