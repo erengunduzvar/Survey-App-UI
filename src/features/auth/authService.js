@@ -1,60 +1,41 @@
-// Use relative /api URLs so Vite dev server proxy
-// forwards to http://localhost:8080 without CORS issues.
-const API_URL = "/api/auth";
+// Base URL tanımı.
+// Gerekirse burayı değiştirerek backend adresini tek yerden yönetebilirsin.
+// Örn: "http://localhost:8080" veya production URL.
+const BASE_URL = "http://localhost:8080";
 
 export const authService = {
+  // URL oluşturma yardımcısı (URL'nin başına base ekler)
+  buildUrl(endpoint) {
+    if (endpoint.startsWith("http")) return endpoint;
+    const cleanEndpoint = endpoint.startsWith("/") ? endpoint : `/${endpoint}`;
+    return `${BASE_URL}${cleanEndpoint}`;
+  },
+
   async register(userData) {
-    try {
-      const response = await fetch(`${API_URL}/register`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(userData),
-      });
+    // Kendi yazdığımız fetchWithAuth'u kullanıyoruz (Token henüz yoksa eklemez)
+    const response = await this.fetchWithAuth("/api/auth/register", {
+      method: "POST",
+      body: JSON.stringify(userData),
+    });
 
-      const data = await response.json();
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.message || "Registration failed");
 
-      if (!response.ok) {
-        throw new Error(data.message || "Registration failed");
-      }
-
-      // Store JWT token if returned
-      if (data.token) {
-        localStorage.setItem("token", data.token);
-      }
-
-      return data;
-    } catch (error) {
-      throw error;
-    }
+    if (data.token) localStorage.setItem("token", data.token);
+    return data;
   },
 
   async login(credentials) {
-    try {
-      const response = await fetch(`${API_URL}/login`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(credentials),
-      });
+    const response = await this.fetchWithAuth("/api/auth/login", {
+      method: "POST",
+      body: JSON.stringify(credentials),
+    });
 
-      const data = await response.json();
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.message || "Login failed");
 
-      if (!response.ok) {
-        throw new Error(data.message || "Login failed");
-      }
-
-      // Store JWT token
-      if (data.token) {
-        localStorage.setItem("token", data.token);
-      }
-
-      return data;
-    } catch (error) {
-      throw error;
-    }
+    if (data.token) localStorage.setItem("token", data.token);
+    return data;
   },
 
   logout() {
@@ -69,22 +50,26 @@ export const authService = {
     return !!this.getToken();
   },
 
-  // Helper method for authenticated API calls
+  /**
+   * Tüm API istekleri için merkezi metod.
+   * 1. URL'yi otomatik tamamlar (8080 ekler).
+   * 2. Varsa Bearer Token'ı header'a ekler.
+   * 3. Content-Type'ı ayarlar.
+   */
   async fetchWithAuth(url, options = {}) {
     const token = this.getToken();
+    const fullUrl = this.buildUrl(url);
 
     const headers = {
-      ...options.headers,
       "Content-Type": "application/json",
+      ...options.headers,
     };
 
     if (token) {
       headers["Authorization"] = `Bearer ${token}`;
     }
 
-    // Keep URL relative (e.g. /api/surveys) so browser origin is 5173
-    // and Vite proxy sends it to backend on 8080.
-    return fetch(url, {
+    return fetch(fullUrl, {
       ...options,
       headers,
     });

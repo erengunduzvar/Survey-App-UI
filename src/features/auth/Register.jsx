@@ -66,14 +66,14 @@ function Register() {
   };
 
   return (
-    <Container maxWidth="sm">
+    <Container maxWidth={false} disableGutters>
       <Box
         sx={{
           minHeight: "100vh",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          py: 4,
+          p: "4px",
         }}
       >
         <Paper

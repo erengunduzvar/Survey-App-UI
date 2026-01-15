@@ -10,6 +10,7 @@ import Login from "./features/auth/Login";
 import Register from "./features/auth/Register";
 import Home from "./features/survey/Home";
 import CreateSurvey from "./features/survey/CreateSurvey";
+import SurveyDetail from "./features/survey/SurveyDetail";
 import ProtectedRoute from "./features/auth/ProtectedRoute";
 
 const theme = createTheme({
@@ -85,6 +86,14 @@ function App() {
             element={
               <ProtectedRoute>
                 <CreateSurvey />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/surveys/:surveyId"
+            element={
+              <ProtectedRoute>
+                <SurveyDetail />
               </ProtectedRoute>
             }
           />

@@ -4,15 +4,15 @@ import {
   AppBar,
   Box,
   Toolbar,
-  Typography,
   Button,
   Container,
-  Card,
-  Fab,
+  IconButton,
+  Typography,
 } from "@mui/material";
 import { Add } from "@mui/icons-material";
 import { authService } from "../auth/authService";
 import CreateSurvey from "./CreateSurvey";
+import SurveyList from "./SurveyList";
 
 function decodeJwt(token) {
   try {
@@ -52,14 +52,17 @@ function Home() {
     setShowCreate((prev) => !prev);
   };
 
+  const handleGoHome = () => {
+    setShowCreate(false);
+    navigate("/");
+  };
+
   return (
     <Box
       sx={{
         minHeight: "100vh",
         display: "flex",
         flexDirection: "column",
-        bgcolor:
-          "linear-gradient(135deg, #edf2ff 0%, #f8f9ff 50%, #ffffff 100%)",
       }}
     >
       <AppBar position="static" color="transparent" elevation={0}>
@@ -67,46 +70,47 @@ function Home() {
           <Typography
             variant="h6"
             component="div"
-            sx={{ flexGrow: 1, fontWeight: 600 }}
+            sx={{ flexGrow: 1, fontWeight: 600, cursor: "pointer" }}
+            onClick={handleGoHome}
           >
             Survey App
           </Typography>
+          <IconButton
+            color="primary"
+            onClick={handleCreateSurvey}
+            sx={{ mr: 1 }}
+            aria-label="Yeni Anket Oluştur"
+          >
+            <Add />
+          </IconButton>
           <Button color="inherit" onClick={handleLogout}>
             Logout
           </Button>
         </Toolbar>
       </AppBar>
-      <Box
-        sx={{
-          flex: 1,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          py: 6,
-        }}
-      >
-        <Container maxWidth="sm">
-          <Card
-            elevation={6}
-            sx={{
-              p: 4,
-              textAlign: "center",
-              borderRadius: 4,
-            }}
-          >
-            <Typography variant="h4" fontWeight="bold" gutterBottom>
-              Hoş geldin{userEmail ? `, ${userEmail}` : ""}!
-            </Typography>
-            <Typography variant="body1" color="text.secondary" sx={{ mt: 2 }}>
-              Modern, kullanıcı dostu anketlerini kolayca oluşturup paylaşmaya
-              hazırsın.
-            </Typography>
-          </Card>
-        </Container>
-      </Box>
+      {!showCreate && (
+        <Box
+          sx={{
+            flex: 1,
+            py: 4,
+          }}
+        >
+          <Container maxWidth="lg">
+            <SurveyList />
+          </Container>
+        </Box>
+      )}
       {showCreate && (
-        <Box sx={{ display: "flex", justifyContent: "center", pb: 6 }}>
-          <Box sx={{ width: "100%", maxWidth: 960, px: 2 }}>
+        <Box
+          sx={{
+            flex: 1,
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "flex-start",
+            py: "4px",
+          }}
+        >
+          <Box sx={{ width: "100%", maxWidth: 1200, px: "4px" }}>
             <CreateSurvey
               inline
               redirectOnSuccess={false}
@@ -115,18 +119,6 @@ function Home() {
           </Box>
         </Box>
       )}
-      <Fab
-        color="primary"
-        sx={{
-          position: "fixed",
-          bottom: 24,
-          right: 24,
-        }}
-        aria-label="Yeni Anket Oluştur"
-        onClick={handleCreateSurvey}
-      >
-        <Add />
-      </Fab>
     </Box>
   );
 }
